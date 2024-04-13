@@ -3,253 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Study Progress Tracker</title>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <title>Mission 2K25</title>
     <style>
-      body {
-        font-family: Poppins;
+      * {
         margin: 0;
         padding: 0;
-        background-color: #ffffff;
-        color: #333333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-      }
-      .container {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        max-width: 1200px;
-        margin: 20px;
-      }
-      #studyForm {
-        background-color: #f2f2f2;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 300px;
-        margin-right: 20px;
-      }
-      input[type="text"],
-      input[type="number"],
-      input[type="date"],
-      input[type="submit"],
-      button {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
         box-sizing: border-box;
-        background-color: #f2f2f2;
-        color: #333333;
-        font-family: Poppins;
-        cursor: pointer;
       }
-      input[type="submit"] {
-        background-color: #4caf50;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
+      body {
+        padding: 100px;
+        font-family: Montserrat;
       }
-      input[type="submit"]:hover {
-        background-color: #45a049;
+      ul {
+        list-style-type: none;
       }
-      #studyChartContainer {
-        background-color: #f2f2f2;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        flex: 1;
-        margin-right: 20px;
+      li {
+        margin-bottom: 10px;
       }
-      .custom-file-upload {
-        display: block;
-        padding: 10px 20px;
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        text-align: center;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-
-      .custom-file-upload:hover {
-        background-color: #45a049;
+      li a {
+        font-size: 20px;
+        text-decoration: none;
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div id="studyChartContainer">
-        <!-- Chart container -->
-        <h2>Mission 2K25 ❤️🤞</h2>
-        <div id="studyChart"></div>
-      </div>
-
-      <div id="studyForm">
-        <!-- Study form -->
-        <h2>Enter Work Hours 🚀</h2>
-        <form id="addStudyForm">
-          <label for="date">Date:</label>
-          <input type="date" id="date" required /><br />
-          <label for="hours">Study Hours:</label>
-          <input type="number" id="hours" min="0" step="0.5" required /><br />
-          <input type="submit" value="Add Study Log" />
-          <button id="clearStorage">Clear Storage</button>
-        </form>
-        <button id="exportData">Download Study Logs</button>
-        <input
-          type="file"
-          id="importData"
-          accept=".json"
-          style="display: none"
-        />
-        <label for="importData" class="custom-file-upload"
-          >Import Study Logs</label
-        >
-      </div>
-    </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const addStudyForm = document.getElementById("addStudyForm");
-        const clearStorageBtn = document.getElementById("clearStorage");
-        const exportDataBtn = document.getElementById("exportData");
-        const importDataInput = document.getElementById("importData");
-        const currentDate = new Date().toISOString().split("T")[0];
-        document.getElementById("date").value = currentDate;
-        let studyChart;
-
-        // Load study logs from local storage on page load
-        updateStudyChart();
-
-        // Add event listener for form submission
-        addStudyForm.addEventListener("submit", function (event) {
-          event.preventDefault();
-          const date = document.getElementById("date").value;
-          const hours = parseFloat(document.getElementById("hours").value);
-
-          // Create a study log object
-          const studyLog = {
-            date: date,
-            hours: hours,
-          };
-
-          // Save study log to local storage
-          saveStudyLog(studyLog);
-
-          // Update study log chart
-          updateStudyChart();
-
-          // Reset form fields
-          addStudyForm.reset();
-        });
-
-        // Function to load study logs from local storage
-        function loadStudyLogs() {
-          return JSON.parse(localStorage.getItem("studyLogs")) || [];
-        }
-
-        // Function to save study log to local storage
-        function saveStudyLog(studyLog) {
-          const studyLogs = loadStudyLogs();
-          let updatedLogs = [];
-          let isMerged = false;
-
-          // Check if the date already exists in the logs
-          for (let i = 0; i < studyLogs.length; i++) {
-            if (studyLogs[i].date === studyLog.date) {
-              // If the date exists, merge the study hours
-              studyLogs[i].hours += studyLog.hours;
-              isMerged = true;
-              break;
-            }
-          }
-
-          // If the date doesn't exist, add it as a new entry
-          if (!isMerged) {
-            studyLogs.push(studyLog);
-          }
-          studyLogs.sort((a, b) => new Date(a.date) - new Date(b.date));
-          localStorage.setItem("studyLogs", JSON.stringify(studyLogs));
-        }
-
-        // Function to update study log chart
-        function updateStudyChart() {
-          const studyLogs = loadStudyLogs();
-          const dates = studyLogs.map((log) => log.date);
-          const hours = studyLogs.map((log) => log.hours);
-
-          if (studyChart) {
-            studyChart.destroy();
-          }
-
-          studyChart = new ApexCharts(document.querySelector("#studyChart"), {
-            chart: {
-              type: "line",
-              height: 500,
-              background: "#f2f2f2",
-              foreColor: "#333333",
-            },
-            series: [
-              {
-                name: "Study Hours",
-                data: hours,
-              },
-            ],
-            xaxis: {
-              categories: dates,
-            },
-            stroke: {
-              curve: "smooth",
-              width: 5,
-            },
-          });
-
-          studyChart.render();
-        }
-
-        // Add event listener for clear storage button
-        clearStorageBtn.addEventListener("click", function () {
-          localStorage.removeItem("studyLogs"); // Clear studyLogs from local storage
-          updateStudyChart(); // Update chart to reflect the change
-        });
-
-        // Function to export study logs as JSON file
-        exportDataBtn.addEventListener("click", function () {
-          const studyLogs = loadStudyLogs();
-          const data = JSON.stringify(studyLogs);
-          const blob = new Blob([data], { type: "application/json" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "study_logs.json";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        });
-
-        // Function to import study logs from a JSON file
-        importDataInput.addEventListener("change", function (event) {
-          const file = event.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-              const content = e.target.result;
-              const studyLogs = JSON.parse(content);
-              localStorage.setItem("studyLogs", JSON.stringify(studyLogs));
-              updateStudyChart();
-            };
-            reader.readAsText(file);
-          }
-        });
-      });
-    </script>
+    <ul>
+      <li><a href="./study.html">Study Analysis</a></li>
+      <li><a href="./exam.html">Exam Analysis</a></li>
+    </ul>
   </body>
 </html>

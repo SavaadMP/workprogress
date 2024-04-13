@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exam Progress Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+      body {
+        font-family: Poppins;
+        margin: 0;
+        padding: 0;
+        background-color: #ffffff;
+        color: #333333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        max-width: 1200px;
+        margin: 20px;
+      }
+
+      #studyForm {
+        background-color: #f2f2f2;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        margin-right: 20px;
+      }
+
+      input[type="number"],
+      input[type="submit"],
+      button,
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        background-color: #f2f2f2;
+        color: #333333;
+        font-family: Poppins;
+        cursor: pointer;
+      }
+
+      input[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+
+      #studyChartContainer {
+        background-color: #f2f2f2;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        margin-right: 20px;
+      }
+
+      .custom-file-upload {
+        display: block;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        text-align: center;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .custom-file-upload:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="studyChartContainer">
+        <!-- Chart container -->
+        <h2>Weekly Exam Analysis</h2>
+        <div id="studyChart"></div>
+      </div>
+
+      <div id="studyForm">
+        <!-- Study form -->
+        <h2>Enter Marks Obtained</h2>
+        <form id="addStudyForm">
+          <label for="subject">Subject:</label>
+          <select id="subject" required>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Biology">Biology</option></select
+          ><br />
+          <label for="marks">Marks Obtained:</label>
+          <input type="number" id="marks" min="0" required /><br />
+          <label for="maxScore">Maximum Marks:</label>
+          <input type="number" id="maxScore" min="0" required /><br />
+          <input type="submit" value="Add Marks" />
+          <button id="clearStorage">Clear Storage</button>
+        </form>
+        <button id="exportData">Download Marks Data</button>
+        <input
+          type="file"
+          id="importData"
+          accept=".json"
+          style="display: none"
+        />
+        <label for="importData" class="custom-file-upload"
+          >Import Marks Data</label
+        >
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const addStudyForm = document.getElementById("addStudyForm");
+        const clearStorageBtn = document.getElementById("clearStorage");
+        const exportDataBtn = document.getElementById("exportData");
+        const importDataInput = document.getElementById("importData");
+        let studyChart;
+
+        // Load marks data from local storage on page load
+        updateStudyChart();
+
+        // Add event listener for form submission
+        addStudyForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const subject = document.getElementById("subject").value;
+          const marks = parseFloat(document.getElementById("marks").value);
+          const maxScore = parseFloat(
+            document.getElementById("maxScore").value
+          );
+
+          // Calculate percentage
+          const percentage = (marks / maxScore) * 100;
+
+          // Create a marks object
+          const marksData = {
+            subject: subject,
+            marks: percentage,
+          };
+
+          // Save marks to local storage
+          saveMarks(marksData);
+
+          // Update marks chart
+          updateStudyChart();
+
+          // Reset form fields
+          addStudyForm.reset();
+        });
+
+        // Function to load marks data from local storage
+        function loadMarks() {
+          return JSON.parse(localStorage.getItem("marksData")) || [];
+        }
+
+        // Function to save marks to local storage
+        function saveMarks(marksData) {
+          const marks = loadMarks();
+          marks.push(marksData);
+          localStorage.setItem("marksData", JSON.stringify(marks));
+        }
+
+        // Function to update marks chart
+        function updateStudyChart() {
+          const marks = loadMarks();
+          const subjects = ["Physics", "Chemistry", "Biology"];
+
+          if (studyChart) {
+            studyChart.destroy();
+          }
+
+          const series = subjects.map((subject) => {
+            const subjectMarks = marks.filter(
+              (mark) => mark.subject === subject
+            );
+            const marksObtained = subjectMarks.map((mark) => mark.marks);
+            return {
+              name: subject,
+              data: marksObtained,
+            };
+          });
+
+          studyChart = new ApexCharts(document.querySelector("#studyChart"), {
+            chart: {
+              type: "line",
+              height: 500,
+              background: "#f2f2f2",
+              foreColor: "#333333",
+            },
+            series: series,
+            xaxis: {
+              categories: ["Week 1", "Week 2", "Week 3", "Week 4"], // Placeholder for x-axis categories
+            },
+            yaxis: {
+              max: 100,
+              labels: {
+                formatter: function (value) {
+                  return value.toFixed(0) + "%";
+                },
+              },
+            },
+            stroke: {
+              curve: "smooth",
+              width: 5,
+            },
+            colors: ["#008FFB", "#00E396", "#FEB019"],
+          });
+
+          studyChart.render();
+        }
+
+        // Add event listener for clear storage button
+        clearStorageBtn.addEventListener("click", function () {
+          localStorage.removeItem("marksData"); // Clear marksData from local storage
+          updateStudyChart(); // Update chart to reflect the change
+        });
+
+        // Function to export marks data as JSON file
+        exportDataBtn.addEventListener("click", function () {
+          const marks = loadMarks();
+          const data = JSON.stringify(marks);
+          const blob = new Blob([data], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "marks_data.json";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+
+        // Function to import marks data from a JSON file
+        importDataInput.addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const content = e.target.result;
+              const marksData = JSON.parse(content);
+              localStorage.setItem("marksData", JSON.stringify(marksData));
+              updateStudyChart();
+            };
+            reader.readAsText(file);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
