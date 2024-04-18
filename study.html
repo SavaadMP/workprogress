@@ -21,8 +21,8 @@
         display: flex;
         flex-direction: row;
         width: 100%;
-        max-width: 1200px;
-        margin: 20px;
+        max-width: 1400px;
+        /* margin: 20px; */
       }
       #studyForm {
         background-color: #f2f2f2;
@@ -88,7 +88,7 @@
     <div class="container">
       <div id="studyChartContainer">
         <!-- Chart container -->
-        <h2>Mission 2K25 ❤️🤞</h2>
+        <h2 onclick="showForm()" id="chartTitle">Mission 2K25 ❤️🤞</h2>
         <div id="studyChart"></div>
       </div>
 
@@ -117,6 +117,8 @@
     </div>
 
     <script>
+      const chartForm = document.getElementById("studyForm");
+
       document.addEventListener("DOMContentLoaded", function () {
         const addStudyForm = document.getElementById("addStudyForm");
         const clearStorageBtn = document.getElementById("clearStorage");
@@ -192,7 +194,7 @@
 
           studyChart = new ApexCharts(document.querySelector("#studyChart"), {
             chart: {
-              type: "line",
+              type: "area",
               height: 500,
               background: "#f2f2f2",
               foreColor: "#333333",
@@ -203,11 +205,39 @@
                 data: hours,
               },
             ],
+            annotations: {
+              yaxis: [
+                {
+                  y: 30,
+                  borderColor: "#999",
+                  label: {
+                    text: "Support",
+                    style: {
+                      color: "#fff",
+                      background: "#00E396",
+                    },
+                  },
+                },
+              ],
+              xaxis: [
+                {
+                  x: new Date("14 Nov 2012").getTime(),
+                  borderColor: "#999",
+                  label: {
+                    text: "Rally",
+                    style: {
+                      color: "#fff",
+                      background: "#775DD0",
+                    },
+                  },
+                },
+              ],
+            },
             xaxis: {
               categories: dates,
             },
             yaxis: {
-              max: 18,
+              max: 24,
             },
             stroke: {
               curve: "smooth",
@@ -253,6 +283,11 @@
           }
         });
       });
+
+      function showForm() {
+        console.log("Clicked");
+        chartForm.style.display = "none";
+      }
     </script>
   </body>
 </html>
