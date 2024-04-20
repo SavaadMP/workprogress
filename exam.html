@@ -177,8 +177,8 @@
           const data = [];
           for (const subject in examData) {
             if (Array.isArray(examData[subject])) {
-              const marks = examData[subject].map(
-                (exam) => (exam.marksObtained / exam.totalMarks) * 100
+              const marks = examData[subject].map((exam) =>
+                Math.round((exam.marksObtained / exam.totalMarks) * 100)
               );
               data.push({
                 name: subject,
