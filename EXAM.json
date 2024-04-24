@@ -1,1 +1,1 @@
-[{"subject":"Physics","marks":0},{"subject":"Chemistry","marks":0},{"subject":"Biology","marks":0},{"subject":"Physics","marks":9.444444444444445},{"subject":"Biology","marks":76.66666666666667}]
+{"Physics":[{"examName":"Nill","subject":"Physics","marksObtained":0,"totalMarks":180}],"Chemistry":[{"examName":"Nill","subject":"Chemistry","marksObtained":0,"totalMarks":180}],"Biology":[{"examName":"Nill","subject":"Biology","marksObtained":0,"totalMarks":180}]}
