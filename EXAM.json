@@ -1,1 +1,62 @@
-{"Physics":[{"examName":"Nill","subject":"Physics","marksObtained":0,"totalMarks":180},{"examName":"Mechanichal Properties Of Solids and Fluids","subject":"Physics","marksObtained":17,"totalMarks":180}],"Chemistry":[{"examName":"Nill","subject":"Chemistry","marksObtained":0,"totalMarks":180},{"examName":"Hydrocarbon + P Block Elements","subject":"Chemistry","marksObtained":7,"totalMarks":180}],"Biology":[{"examName":"Nill","subject":"Biology","marksObtained":0,"totalMarks":180},{"examName":"Excretory Products and Their Elimination","subject":"Biology","marksObtained":138,"totalMarks":180}]}
+{
+  "Physics": [
+    {
+      "examName": "Nill",
+      "subject": "Physics",
+      "marksObtained": 0,
+      "totalMarks": 180
+    },
+    {
+      "examName": "Mechanichal Properties Of Solids and Fluids",
+      "subject": "Physics",
+      "marksObtained": 17,
+      "totalMarks": 180
+    },
+    {
+      "examName": "MOCK TEST 1",
+      "subject": "Physics",
+      "marksObtained": 52,
+      "totalMarks": 120
+    }
+  ],
+  "Chemistry": [
+    {
+      "examName": "Nill",
+      "subject": "Chemistry",
+      "marksObtained": 0,
+      "totalMarks": 180
+    },
+    {
+      "examName": "Hydrocarbon + P Block Elements",
+      "subject": "Chemistry",
+      "marksObtained": 7,
+      "totalMarks": 180
+    },
+    {
+      "examName": "MOCK TEST 1",
+      "subject": "Chemistry",
+      "marksObtained": 28,
+      "totalMarks": 120
+    }
+  ],
+  "Biology": [
+    {
+      "examName": "Nill",
+      "subject": "Biology",
+      "marksObtained": 0,
+      "totalMarks": 180
+    },
+    {
+      "examName": "Excretory Products and Their Elimination",
+      "subject": "Biology",
+      "marksObtained": 138,
+      "totalMarks": 180
+    },
+    {
+      "examName": "MOCK TEST 1",
+      "subject": "Biology",
+      "marksObtained": 20,
+      "totalMarks": 120
+    }
+  ]
+}
